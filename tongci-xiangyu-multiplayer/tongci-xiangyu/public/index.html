@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#faf8f5">
+  <meta name="description" content="同词相遇——和朋友一起，看看你们的脑回路有多像。">
+  <title>同词相遇</title>
+  <style>
+    :root {
+      --bg: #faf8f5; --paper: #fffefd; --ink: #2d2940; --muted: #9b91ad;
+      --purple: #8b6acb; --purple-soft: #efe7fb; --teal: #5eaaa5;
+      --teal-soft: #e1f2ef; --green-soft: #edf2e7; --line: #e9e1ee;
+      --shadow: 0 12px 34px rgba(74, 53, 103, .07);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .page { width: min(100%, 620px); margin: 0 auto; padding: 24px 18px 48px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 30px; }
+    .brand { color:var(--purple); font-weight:800; font-size:24px; letter-spacing:1px; }
+    .rules { border:0; background:transparent; color:var(--purple); font-weight:700; padding:8px 0; }
+    .hero { text-align:center; padding: 10px 8px 28px; }
+    .eyebrow { color:var(--purple); opacity:.8; font-size:14px; letter-spacing:2px; margin:0 0 12px; }
+    h1 { font-size:clamp(30px, 8vw, 42px); line-height:1.35; margin:0; letter-spacing:1px; }
+    h1 span { color:var(--purple); }
+    .sub { color:#9888a9; margin:14px 0 8px; font-size:16px; }
+    .meta { color:#a69bb2; font-size:14px; margin:0; }
+    .example { display:flex; align-items:center; justify-content:center; gap:9px; margin:22px auto 0; }
+    .word { padding:12px 20px; border-radius:14px; font-weight:800; font-size:18px; }
+    .word.a { background:var(--purple-soft); color:var(--purple); }
+    .word.b { background:var(--teal-soft); color:var(--teal); }
+    .word.c { background:var(--green-soft); color:#788b64; }
+    .symbol { color:#b5a5c7; font-size:19px; }
+    .panel { background:var(--paper); border:1px solid var(--line); border-radius:24px; padding:20px; box-shadow:var(--shadow); }
+    .tabs, .segmented { display:flex; gap:5px; background:#f1edf5; padding:5px; border-radius:15px; }
+    .tabs button, .segmented button { flex:1; border:0; border-radius:12px; background:transparent; color:#9d91ac; padding:13px 8px; font-weight:700; }
+    .tabs button.active, .segmented button.active { background:white; color:var(--purple); box-shadow:0 3px 12px rgba(73,52,99,.08); }
+    .field { margin-top:20px; }
+    .field label, .field-title { display:block; font-weight:800; margin-bottom:9px; }
+    .field input { width:100%; border:1px solid #e7ddec; background:#fbf9fc; border-radius:14px; padding:16px 17px; outline:none; color:var(--ink); font-size:17px; }
+    .field input:focus { border-color:#bba5df; box-shadow:0 0 0 3px rgba(139,106,203,.1); }
+    .hint-row { display:flex; justify-content:space-between; align-items:center; }
+    .hint { color:#aa9ab8; font-size:13px; font-weight:500; }
+    .segmented { background:#f1efed; }
+    .segmented button { padding:15px 5px; font-weight:700; }
+    .primary { width:100%; border:0; border-radius:15px; padding:17px 16px; background:var(--purple); color:white; font-size:17px; font-weight:800; margin-top:22px; box-shadow:0 8px 18px rgba(139,106,203,.18); }
+    .primary:disabled { opacity:.5; cursor:not-allowed; }
+    .secondary { border:1px solid var(--line); background:white; color:var(--purple); border-radius:13px; padding:12px 15px; font-weight:700; }
+    .small-note { color:#aa9eb2; font-size:13px; text-align:center; line-height:1.7; margin:16px 0 0; }
+    .hidden { display:none !important; }
+    .room-head { text-align:center; margin:6px 0 22px; }
+    .room-code { font-size:34px; font-weight:900; letter-spacing:7px; color:var(--purple); margin:8px 0; }
+    .room-card { border:1px dashed #d9cbe9; border-radius:18px; padding:17px; background:#fcfaff; text-align:center; }
+    .player-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:16px; }
+    .player { background:#f7f3fa; border-radius:14px; padding:14px 12px; min-height:70px; }
+    .player strong { display:block; font-size:15px; }
+    .player small { color:#a397ae; display:block; margin-top:5px; }
+    .host-tag { color:var(--purple); font-size:11px; margin-left:5px; }
+    .status { text-align:center; color:#9b8da8; margin:18px 0 0; font-size:14px; }
+    .game-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+    .pill { border-radius:99px; background:var(--purple-soft); color:var(--purple); padding:8px 13px; font-weight:800; font-size:13px; }
+    .timer { color:#d18b62; font-weight:900; font-size:20px; font-variant-numeric:tabular-nums; }
+    .prompt-title { text-align:center; color:#a092ae; font-size:14px; margin:14px 0 18px; }
+    .prompt { display:flex; align-items:center; justify-content:center; gap:10px; margin:0 auto 22px; }
+    .prompt .word { font-size:clamp(20px, 6vw, 26px); padding:17px 22px; }
+    .instruction { text-align:center; color:#877b93; line-height:1.7; font-size:14px; }
+    .answer-input { text-align:center; font-size:22px !important; font-weight:800; letter-spacing:1px; }
+    .progress-list { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:20px; }
+    .progress-chip { border-radius:99px; background:#f3f0f5; color:#9c91a7; padding:8px 12px; font-size:13px; }
+    .progress-chip.done { background:var(--teal-soft); color:#4d9993; }
+    .wait-box { text-align:center; background:#f8f5fb; border-radius:16px; padding:24px 14px; color:#93869f; margin-top:18px; }
+    .result-list { display:grid; gap:10px; margin-top:16px; }
+    .result-row { display:flex; align-items:center; justify-content:space-between; gap:10px; border-radius:15px; background:#f7f4f8; padding:14px; }
+    .result-row.match { background:#edf6f0; border:1px solid #d7e9dc; }
+    .result-left { min-width:0; }
+    .result-left strong { display:block; }
+    .result-left small { color:#9b91a2; display:block; margin-top:4px; }
+    .answer { color:var(--purple); font-weight:900; font-size:18px; text-align:right; overflow-wrap:anywhere; }
+    .points { color:#6a9c7a; font-size:12px; font-weight:800; text-align:right; margin-top:3px; }
+    .section-title { font-size:20px; margin:0 0 8px; }
+    .center { text-align:center; }
+    .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:#342d40; color:white; border-radius:99px; padding:12px 18px; font-size:14px; z-index:20; box-shadow:0 8px 25px #0002; max-width:90vw; text-align:center; }
+    .footer { text-align:center; color:#b1a8b6; font-size:12px; margin-top:24px; }
+    @media (min-width:520px) { .page { padding-top:32px; } .panel { padding:24px; } }
+  </style>
+</head>
+<body>
+  <main id="app" class="page"></main>
+  <div id="toast" class="toast hidden"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const app = document.getElementById("app");
+    const toastEl = document.getElementById("toast");
+    let roomState = null;
+    let roomCode = "";
+    let activeTab = "create";
+    let toastTimer = null;
+    let clockTimer = null;
+
+    function esc(s) {
+      return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    }
+    function toast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.remove("hidden");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.add("hidden"), 2600);
+    }
+    function stopClock() { if (clockTimer) clearInterval(clockTimer); clockTimer = null; }
+    function header() {
+      return `<header class="topbar"><div class="brand">同词相遇</div><button class="rules" id="rulesBtn">玩法说明</button></header>`;
+    }
+    function renderHome() {
+      stopClock();
+      const roomFromUrl = new URLSearchParams(location.search).get("room");
+      app.innerHTML = `${header()}
+        <section class="hero">
+          <p class="eyebrow">和朋友的脑回路碰个面</p>
+          <h1>你的脑回路，<br><span>恰好我也有。</span></h1>
+          <p class="sub">一个词，一点联想，一次不约而同。</p>
+          <p class="meta">2–4 人在线 · 想到一起为止</p>
+          <div class="example"><span class="word a">大海</span><span class="symbol">×</span><span class="word b">天空</span><span class="symbol">→</span><span class="word c">蓝色 ✓</span></div>
+        </section>
+        <section class="panel">
+          <div class="tabs">
+            <button id="createTab" class="${activeTab === "create" ? "active" : ""}">创建房间</button>
+            <button id="joinTab" class="${activeTab === "join" ? "active" : ""}">加入房间</button>
+          </div>
+          <div id="createPane" class="${activeTab === "create" ? "" : "hidden"}">
+            <div class="field"><label for="createNick">怎么称呼你？</label><input id="createNick" maxlength="12" placeholder="输入你的昵称" autocomplete="nickname"></div>
+            <div class="field">
+              <div class="hint-row"><span class="field-title">房间人数</span><span class="hint">满员后自动开始</span></div>
+              <div class="segmented" id="playerChoices">
+                <button data-value="2" class="active">2 人</button><button data-value="3">3 人</button><button data-value="4">4 人</button>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-title">每轮思考时间</span>
+              <div class="segmented" id="timeChoices">
+                <button data-value="30" class="active">30 秒</button><button data-value="60">60 秒</button><button data-value="custom">自定义</button>
+              </div>
+              <input id="customTime" class="hidden" type="number" min="15" max="120" value="45" style="margin-top:10px" placeholder="15–120 秒">
+            </div>
+            <button class="primary" id="createBtn">创建房间</button>
+            <p class="small-note">创建后把房间号或邀请链接发给朋友，好友加入即可开始。</p>
+          </div>
+          <div id="joinPane" class="${activeTab === "join" ? "" : "hidden"}">
+            <div class="field"><label for="joinNick">怎么称呼你？</label><input id="joinNick" maxlength="12" placeholder="输入你的昵称" autocomplete="nickname"></div>
+            <div class="field"><label for="joinCode">输入房间号</label><input id="joinCode" maxlength="6" placeholder="输入 6 位房间号" style="text-transform:uppercase;letter-spacing:4px;text-align:center;font-weight:800"></div>
+            <button class="primary" id="joinBtn">加入房间</button>
+            <p class="small-note">让创建房间的朋友把 6 位房间号发给你。</p>
+          </div>
+        </section>
+        <div class="footer">把偶然的联想，变成默契的相遇。</div>`;
+      bindHome();
+      if (roomFromUrl) document.getElementById("joinCode").value = roomFromUrl.toUpperCase();
+    }
+    function bindHome() {
+      document.getElementById("createTab").onclick = () => { activeTab = "create"; renderHome(); };
+      document.getElementById("joinTab").onclick = () => { activeTab = "join"; renderHome(); };
+      document.getElementById("rulesBtn").onclick = showRules;
+      let playerCount = 2, timeChoice = "30";
+      document.querySelectorAll("#playerChoices button").forEach(btn => btn.onclick = () => {
+        playerCount = Number(btn.dataset.value);
+        document.querySelectorAll("#playerChoices button").forEach(b => b.classList.toggle("active", b === btn));
+      });
+      document.querySelectorAll("#timeChoices button").forEach(btn => btn.onclick = () => {
+        timeChoice = btn.dataset.value;
+        document.querySelectorAll("#timeChoices button").forEach(b => b.classList.toggle("active", b === btn));
+        document.getElementById("customTime").classList.toggle("hidden", timeChoice !== "custom");
+      });
+      document.getElementById("createBtn").onclick = () => {
+        const nickname = document.getElementById("createNick").value.trim();
+        if (!nickname) return toast("先给自己起个昵称吧。");
+        let seconds = timeChoice === "custom" ? Number(document.getElementById("customTime").value) : Number(timeChoice);
+        if (!Number.isFinite(seconds) || seconds < 15 || seconds > 120) return toast("自定义时间请设置为 15–120 秒。");
+        socket.emit("room:create", { nickname, maxPlayers: playerCount, roundSeconds: seconds });
+      };
+      document.getElementById("joinBtn").onclick = () => {
+        const nickname = document.getElementById("joinNick").value.trim();
+        const code = document.getElementById("joinCode").value.trim().toUpperCase();
+        if (!nickname) return toast("先输入昵称。");
+        if (code.length !== 6) return toast("请输入 6 位房间号。");
+        socket.emit("room:join", { nickname, code });
+      };
+      const codeInput = document.getElementById("joinCode");
+      codeInput.addEventListener("input", () => codeInput.value = codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0,6));
+    }
+    function showRules() {
+      alert("玩法说明\\n\\n1. 房间满员后自动开始，每局共 5 轮。\\n2. 每轮会出现两个词，所有人同时写下一个能同时联想到这两个词的词语。\\n3. 提交后不能修改，其他人的答案在揭晓前不会显示。\\n4. 与你想到同一个词的每位玩家，都会给你带来 1 分。\\n5. 五轮结束后按总分排名。");
+    }
+    function renderLobby(s) {
+      stopClock();
+      const isHost = s.hostId === socket.id;
+      const me = s.players.find(p => p.id === socket.id);
+      const invite = location.origin + location.pathname + "?room=" + s.code;
+      const playerCards = s.players.map(p => `<div class="player"><strong>${esc(p.nickname)}${p.id === s.hostId ? '<span class="host-tag">房主</span>' : ""}${p.id === socket.id ? '<span class="host-tag">你</span>' : ""}</strong><small>已加入</small></div>`).join("");
+      const emptyCards = Array.from({length: Math.max(0, s.maxPlayers - s.players.length)}, () => `<div class="player" style="opacity:.55"><strong>等待加入…</strong><small>把房间号分享给朋友</small></div>`).join("");
+      app.innerHTML = `${header()}
+        <section class="panel">
+          <div class="room-head"><p class="eyebrow">房间已创建</p><h2 class="section-title">邀请朋友加入</h2><div class="room-code">${esc(s.code)}</div><p class="meta">${s.players.length} / ${s.maxPlayers} 人 · 每轮 ${s.roundSeconds} 秒</p></div>
+          <div class="room-card"><strong>分享房间号，好友打开链接即可加入</strong><div style="display:flex;gap:8px;margin-top:14px"><button class="secondary" id="copyCode" style="flex:1">复制房间号</button><button class="secondary" id="shareLink" style="flex:1">分享邀请链接</button></div></div>
+          <div class="player-list">${playerCards}${emptyCards}</div>
+          <p class="status">${s.players.length === s.maxPlayers ? "房间满员，马上开始…" : `还差 ${s.maxPlayers - s.players.length} 位朋友，满员后自动开始。`}</p>
+          <button class="primary" id="leaveBtn" style="background:#eee9f2;color:#887b95;box-shadow:none">离开房间</button>
+        </section>
+        <div class="footer">${me ? "你已进入房间，等待朋友就位。" : "等待玩家加入…"}</div>`;
+      document.getElementById("rulesBtn").onclick = showRules;
+      document.getElementById("copyCode").onclick = async () => { await copyText(s.code); toast("房间号已复制"); };
+      document.getElementById("shareLink").onclick = async () => {
+        if (navigator.share) {
+          try { await navigator.share({title:"来玩同词相遇", text:"加入我的同词相遇房间：" + s.code, url:invite}); } catch(e) {}
+        } else { await copyText(invite); toast("邀请链接已复制"); }
+      };
+      document.getElementById("leaveBtn").onclick = leaveRoom;
+    }
+    async function copyText(value) {
+      try { await navigator.clipboard.writeText(value); }
+      catch(e) {
+        const el = document.createElement("textarea"); el.value = value; document.body.appendChild(el); el.select(); document.execCommand("copy"); el.remove();
+      }
+    }
+    function renderPlaying(s) {
+      const me = s.players.find(p => p.id === socket.id);
+      const submitted = me && me.submitted;
+      const chips = s.players.map(p => `<span class="progress-chip ${p.submitted ? "done" : ""}">${esc(p.nickname)} · ${p.submitted ? "已提交" : "思考中"}</span>`).join("");
+      app.innerHTML = `${header()}
+        <section class="panel">
+          <div class="game-top"><span class="pill">第 ${s.round} / ${s.totalRounds} 轮</span><span class="timer" id="timerText">-- 秒</span></div>
+          <p class="prompt-title">这两个词，会让你想到什么？</p>
+          <div class="prompt"><span class="word a">${esc(s.prompt[0])}</span><span class="symbol">×</span><span class="word b">${esc(s.prompt[1])}</span></div>
+          <p class="instruction">想一个能同时联想到这两个词的词语。<br>答案越默契，越容易相遇。</p>
+          ${submitted ? `<div class="wait-box"><strong>答案已锁定 ✓</strong><p>等其他玩家提交后，就能揭晓大家的脑回路。</p></div>` : `<div class="field"><input id="answerInput" class="answer-input" maxlength="20" placeholder="输入你的联想词" autocomplete="off"><button class="primary" id="submitBtn">提交答案</button></div>`}
+          <div class="progress-list">${chips}</div>
+          <p class="status">${s.players.filter(p => p.submitted).length} / ${s.players.length} 人已提交</p>
+        </section>`;
+      document.getElementById("rulesBtn").onclick = showRules;
+      if (!submitted) {
+        const input = document.getElementById("answerInput");
+        document.getElementById("submitBtn").onclick = submit;
+        input.addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+        function submit() {
+          const answer = input.value.trim();
+          if (!answer) return toast("写下你的联想词再提交吧。");
+          socket.emit("game:submit", {code:s.code, answer});
+        }
+      }
+      stopClock();
+      const updateTimer = () => {
+        const el = document.getElementById("timerText");
+        if (!el || !roomState || roomState.phase !== "playing") return;
+        const left = Math.max(0, Math.ceil((roomState.deadline - Date.now()) / 1000));
+        el.textContent = left + " 秒";
+      };
+      updateTimer();
+      clockTimer = setInterval(updateTimer, 250);
+    }
+    function renderReveal(s) {
+      stopClock();
+      const me = s.players.find(p => p.id === socket.id);
+      const myResult = (s.results || []).find(r => r.playerId === socket.id);
+      const didMatch = myResult && myResult.points > 0;
+      const rows = (s.results || []).map(r => `<div class="result-row ${r.points ? "match" : ""}"><div class="result-left"><strong>${esc(r.nickname)}${r.playerId === socket.id ? "（你）" : ""}</strong><small>${r.points ? "和 " + esc(r.matchedWith.join("、")) + " 想到了一起" : "这次没有匹配"}</small></div><div><div class="answer">${esc(r.answer)}</div><div class="points">${r.points ? "+" + r.points + " 分" : "0 分"} · 总分 ${r.score}</div></div></div>`).join("");
+      const isHost = s.hostId === socket.id;
+      const nextLabel = s.round >= s.totalRounds ? "查看最终排名" : "下一轮";
+      app.innerHTML = `${header()}
+        <section class="panel">
+          <div class="center"><p class="eyebrow">第 ${s.round} 轮 · 揭晓时刻</p><h2 class="section-title">${didMatch ? "你们想到一起了！" : "每个人的脑回路都很有趣"}</h2><p class="meta">${esc(s.prompt[0])} × ${esc(s.prompt[1])}</p></div>
+          <div class="result-list">${rows}</div>
+          ${isHost ? `<button class="primary" id="nextBtn">${nextLabel}</button>` : `<div class="wait-box">等待房主开始下一轮…</div>`}
+        </section>`;
+      document.getElementById("rulesBtn").onclick = showRules;
+      const next = document.getElementById("nextBtn");
+      if (next) next.onclick = () => socket.emit("game:next", {code:s.code});
+    }
+    function renderOver(s) {
+      stopClock();
+      const ranking = [...s.players].sort((a,b) => b.score - a.score);
+      const rows = ranking.map((p,i) => `<div class="result-row ${i === 0 ? "match" : ""}"><div class="result-left"><strong>${["🥇","🥈","🥉","🎈"][i]} ${esc(p.nickname)}${p.id === socket.id ? "（你）" : ""}</strong><small>${i === 0 ? "本局默契王" : "本局排名"}</small></div><div class="answer">${p.score} 分</div></div>`).join("");
+      app.innerHTML = `${header()}
+        <section class="panel">
+          <div class="center"><p class="eyebrow">游戏结束</p><h2 class="section-title">默契值揭晓</h2><p class="meta">五轮结束，看看谁最懂大家的脑回路。</p></div>
+          <div class="result-list">${rows}</div>
+          <button class="primary" id="homeBtn">再开一局</button>
+        </section>`;
+      document.getElementById("rulesBtn").onclick = showRules;
+      document.getElementById("homeBtn").onclick = () => {
+        socket.emit("room:leave", {code:s.code});
+        roomState = null; roomCode = ""; history.replaceState({}, "", location.pathname); renderHome();
+      };
+    }
+    function render() {
+      if (!roomState) return renderHome();
+      if (roomState.phase === "lobby") return renderLobby(roomState);
+      if (roomState.phase === "playing") return renderPlaying(roomState);
+      if (roomState.phase === "reveal") return renderReveal(roomState);
+      if (roomState.phase === "over") return renderOver(roomState);
+      renderHome();
+    }
+    function leaveRoom() {
+      if (roomCode) socket.emit("room:leave", {code:roomCode});
+      roomState = null; roomCode = "";
+      history.replaceState({}, "", location.pathname);
+      renderHome();
+    }
+    socket.on("connect", () => {});
+    socket.on("room:entered", data => {
+      roomCode = data.code;
+      history.replaceState({}, "", location.pathname + "?room=" + data.code);
+    });
+    socket.on("room:update", data => { roomState = data; roomCode = data.code; render(); });
+    socket.on("game:error", message => toast(message));
+    if (new URLSearchParams(location.search).get("room")) activeTab = "join";
+    renderHome();
+  </script>
+</body>
+</html>
